@@ -1,13 +1,13 @@
-import React from "react";
-import Homescreen from "./Components/Home/Homescreen";
-import logo from "./logo.svg";
-import Route from "./Components/Routes/Route";
+import "./App.css";
+import { Todo } from "./components";
 
 function App() {
   return (
-    <div>
-      <Route />
-    </div>
+    <>
+      <div>
+        <Todo />
+      </div>
+    </>
   );
 }
 

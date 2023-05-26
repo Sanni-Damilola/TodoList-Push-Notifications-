@@ -1,16 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import push from "react-push-notification";
-
-interface data {
-  todo: string;
-  id: number;
-  staus: boolean;
-  Describe: string;
-  start: string;
-  end: string;
-  time: string;
-}
+import { data } from "../../types";
 
 const Hero = () => {
   const [todovalue, setTodo] = React.useState("");
@@ -100,7 +91,7 @@ const Hero = () => {
 
   // done
   const [id, setId] = React.useState(0);
-  const noitfy = () => {
+  const notify = () => {
     push({
       title: "task completed",
       duration: 10000,
@@ -111,11 +102,21 @@ const Hero = () => {
       native: true,
     });
   };
-  const changeDoneState = (id: number) => {
-    data[0].staus = true;
-    setId(id);
-    noitfy();
+  const changeDoneState = () => {
+    const updatedTasks = data.map((task) => {
+      if (task.id === id) {
+        return { ...task, status: true };
+      }
+      return task;
+    });
+    setData(updatedTasks);
+    notify();
   };
+  const [doneId, setdoneId] = React.useState<number>();
+  const getId: any = data.map((el) => el.id === doneId).includes(true);
+  const fn = () => {
+    // setdoneId()
+  }
 
   function requestNotificationPermission() {
     if (Notification.permission !== "granted") {
@@ -129,7 +130,7 @@ const Hero = () => {
 
   return (
     <Container>
-      <h2 onClick={noitfy}>welcome 😎</h2>
+      <h2 onClick={notify}>welcome 😎</h2>
       <span>let create a task for today</span>
 
       {/* start and finish */}
@@ -137,7 +138,7 @@ const Hero = () => {
         <Hold>
           <Start>set start</Start>
           <SeleteDate
-            onChange={(e) => {
+            onChange={(e: any) => {
               setStart(e.target.value);
             }}
             type={"date"}
@@ -146,7 +147,7 @@ const Hero = () => {
         <Hold>
           <End>set end</End>
           <SeleteDate
-            onChange={(e) => {
+            onChange={(e: any) => {
               setEnd(e.target.value);
             }}
             type={"date"}
@@ -167,7 +168,7 @@ const Hero = () => {
       {todovalue !== "" ? (
         <Textarea
           maxLength={15}
-          onChange={(e) => {
+          onChange={(e: any) => {
             setdes(e.target.value);
           }}
           placeholder="short description"
@@ -242,12 +243,13 @@ const Hero = () => {
                 </Button>
               )}
               <Button
-                onClick={(id) => {
-                  changeDoneState(data.id);
+                onClick={() => {
+                  changeDoneState();
+                  requestNotificationPermission();
                 }}
                 bg=""
               >
-                done
+                {data.id === 1 ? "Task Completed" : "done"}
               </Button>
               {/* <DoneWrapper>
                 <DoneInput type={"radio"} value="gender" name="gender" /> done
@@ -262,15 +264,14 @@ const Hero = () => {
                 delete
               </Button>
             </Wrap>
-
-            <Done dn={""}>
+            {/*  <Done dn={"value"}>
               <pre>
                 This task as <br /> been done
               </pre>
               <br />
               {"👇"} <p>{data.todo}</p>
               {"✔"}
-            </Done>
+            </Done> */}
           </Card>
         ))}
       </SlidDown>
@@ -284,15 +285,6 @@ const Hero = () => {
 };
 
 export default Hero;
-
-const DoneInput = styled.input``;
-const Undone = styled.input``;
-const DoneWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-`;
 
 const SlidDown = styled.div`
   @media screen and (max-width: 500px) {
@@ -325,7 +317,6 @@ const End = styled.pre`
   }
   text-transform: capitalize;
 `;
-const Span = styled.span``;
 
 const StartAndFinish = styled.div`
   flex-direction: column;
@@ -545,3 +536,5 @@ const Input = styled.input`
     font-weight: 500;
   }
 `;
+
+// --legacy-peer-deps
